@@ -24,12 +24,55 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Lock background body scroll when mobile menu is open to prevent overlapping scroll
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  const handleNavClick = (e, href) => {
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const targetId = href.substring(1);
+
+      if (isOpen) {
+        setIsOpen(false);
+        // Small timeout allows the mobile menu animation to cleanly finish before scrolling
+        setTimeout(() => {
+          const el = targetId ? document.getElementById(targetId) : null;
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+          } else {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
+          window.history.pushState(null, "", href);
+        }, 150);
+      } else {
+        const el = targetId ? document.getElementById(targetId) : null;
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+        window.history.pushState(null, "", href);
+      }
+    } else {
+      setIsOpen(false);
+    }
+  };
+
   return (
     <header
       className={cn(
         "fixed top-0 w-full z-50 transition-all duration-300 border-b",
-        scrolled
-          ? "bg-background/80 backdrop-blur-md border-border py-3 shadow-sm"
+        scrolled || isOpen
+          ? "bg-background/95 backdrop-blur-md border-border py-3 shadow-sm"
           : "bg-transparent border-transparent py-5"
       )}
     >
@@ -37,6 +80,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between">
           <a
             href="#"
+            onClick={(e) => handleNavClick(e, "#")}
             className="text-xl font-bold tracking-tight hover:text-accent transition-colors"
           >
             Utkarsh Pachauri
@@ -49,6 +93,7 @@ export default function Navbar() {
                 <a
                   key={link.name}
                   href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
                   className="text-sm font-medium text-text-secondary hover:text-white transition-colors"
                 >
                   {link.name}
@@ -79,6 +124,7 @@ export default function Navbar() {
               </a>
               <a
                 href="#projects"
+                onClick={(e) => handleNavClick(e, "#projects")}
                 className="bg-accent hover:bg-accent-hover text-white text-sm font-semibold px-4 py-2 rounded-md transition-colors"
               >
                 View Projects
@@ -88,42 +134,44 @@ export default function Navbar() {
 
           {/* Mobile Menu Toggle */}
           <button
-            className="md:hidden p-2 -mr-2 text-text-secondary hover:text-white"
+            className="md:hidden p-2 -mr-2 text-text-secondary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent rounded-lg"
             onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isOpen}
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Dropdown */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-surface border-b border-border overflow-hidden"
+            transition={{ duration: 0.2 }}
+            className="md:hidden bg-surface border-t border-border mt-3 shadow-2xl max-h-[calc(100dvh-4.5rem)] overflow-y-auto"
           >
-            <div className="px-4 pt-2 pb-6 flex flex-col gap-4">
+            <div className="px-4 pt-3 pb-6 flex flex-col gap-3">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
-                  className="text-base font-medium text-text-secondary hover:text-white py-2 block"
-                  onClick={() => setIsOpen(false)}
+                  className="text-base font-medium text-text-secondary hover:text-white py-2.5 px-3 rounded-lg hover:bg-surface-hover transition-colors block"
+                  onClick={(e) => handleNavClick(e, link.href)}
                 >
                   {link.name}
                 </a>
               ))}
-              <div className="flex items-center gap-4 pt-4 border-t border-border">
+              <div className="flex items-center gap-4 pt-3 pb-1 border-t border-border px-3">
                 <a
                   href={CONTACT_INFO.github}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackEvent("github_click", { link_location: "navbar_mobile" })}
-                  className="p-2 text-text-secondary hover:text-white"
+                  className="p-2 text-text-secondary hover:text-white hover:bg-surface-hover rounded-lg transition-colors"
                   aria-label="GitHub"
                 >
                   <FaGithub className="w-6 h-6" />
@@ -133,7 +181,7 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackEvent("linkedin_click", { link_location: "navbar_mobile" })}
-                  className="p-2 text-text-secondary hover:text-white"
+                  className="p-2 text-text-secondary hover:text-white hover:bg-surface-hover rounded-lg transition-colors"
                   aria-label="LinkedIn"
                 >
                   <FaLinkedin className="w-6 h-6" />
@@ -141,8 +189,8 @@ export default function Navbar() {
               </div>
               <a
                 href="#projects"
-                onClick={() => setIsOpen(false)}
-                className="mt-2 bg-accent hover:bg-accent-hover text-white text-center font-semibold px-4 py-3 rounded-md transition-colors w-full"
+                onClick={(e) => handleNavClick(e, "#projects")}
+                className="mt-2 bg-accent hover:bg-accent-hover text-white text-center font-semibold py-3 px-4 rounded-lg transition-colors w-full block shadow-sm"
               >
                 View Projects
               </a>

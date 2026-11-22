@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, Phone, Send, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Phone, Send, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { CONTACT_INFO } from "../data/socialLinks";
 import { trackEvent } from "../utils/analytics";
@@ -185,39 +185,18 @@ export default function Contact() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div>
+            <div className="flex flex-col justify-center items-center text-center">
               <h3 className="text-xl font-bold text-white mb-6">Contact Information</h3>
-              <div className="space-y-6">
-                {/* Email Option */}
-                <a
-                  href={`mailto:${CONTACT_INFO.email}`}
-                  onClick={() => trackEvent("email_click", { link_location: "contact" })}
-                  className="flex items-center gap-4 text-text-secondary hover:text-white transition-colors group"
-                  aria-label="Send email"
-                >
-                  <div className="p-3 bg-background border border-border rounded-lg group-hover:border-accent transition-colors">
-                    <Mail className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <span className="block text-sm font-medium">Email</span>
-                    <span className="text-lg font-semibold text-white">{CONTACT_INFO.email}</span>
-                  </div>
-                </a>
-
+              <div className="flex items-center justify-center gap-4 sm:gap-6 flex-wrap">
                 {/* Direct Phone / Call Me Option */}
                 <a
                   href={`tel:${CONTACT_INFO.phone}`}
                   onClick={() => trackEvent("phone_click", { link_location: "contact" })}
-                  className="flex items-center gap-4 text-text-secondary hover:text-white transition-colors group"
-                  aria-label="Call Me directly"
+                  className="p-3.5 bg-background border border-border rounded-lg text-accent hover:border-accent hover:text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background transition-all duration-300 group"
+                  aria-label="Call Me"
+                  title="Call Me"
                 >
-                  <div className="p-3 bg-background border border-border rounded-lg group-hover:border-accent transition-colors">
-                    <Phone className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <span className="block text-sm font-medium">Call Me</span>
-                    <span className="text-lg font-semibold text-white">{CONTACT_INFO.phone}</span>
-                  </div>
+                  <Phone className="w-6 h-6 transition-transform group-hover:scale-110" />
                 </a>
 
                 {/* GitHub Option */}
@@ -226,16 +205,11 @@ export default function Contact() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackEvent("github_click", { link_location: "contact" })}
-                  className="flex items-center gap-4 text-text-secondary hover:text-white transition-colors group"
-                  aria-label="Visit GitHub profile"
+                  className="p-3.5 bg-background border border-border rounded-lg text-accent hover:border-accent hover:text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background transition-all duration-300 group"
+                  aria-label="GitHub Profile"
+                  title="GitHub Profile"
                 >
-                  <div className="p-3 bg-background border border-border rounded-lg group-hover:border-accent transition-colors">
-                    <FaGithub className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <span className="block text-sm font-medium">GitHub</span>
-                    <span className="text-lg font-semibold text-white">{CONTACT_INFO.githubUsername}</span>
-                  </div>
+                  <FaGithub className="w-6 h-6 transition-transform group-hover:scale-110" />
                 </a>
 
                 {/* LinkedIn Option */}
@@ -244,16 +218,11 @@ export default function Contact() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackEvent("linkedin_click", { link_location: "contact" })}
-                  className="flex items-center gap-4 text-text-secondary hover:text-white transition-colors group"
-                  aria-label="Visit LinkedIn profile"
+                  className="p-3.5 bg-background border border-border rounded-lg text-accent hover:border-accent hover:text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background transition-all duration-300 group"
+                  aria-label="LinkedIn Profile"
+                  title="LinkedIn Profile"
                 >
-                  <div className="p-3 bg-background border border-border rounded-lg group-hover:border-accent transition-colors">
-                    <FaLinkedin className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <span className="block text-sm font-medium">LinkedIn</span>
-                    <span className="text-lg font-semibold text-white">{CONTACT_INFO.linkedinUsername}</span>
-                  </div>
+                  <FaLinkedin className="w-6 h-6 transition-transform group-hover:scale-110" />
                 </a>
               </div>
             </div>
